@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Line Todo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="./js/main.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4f46e5",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <div class="bg-gray-100 h-screen flex items-center justify-center">
+      <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-sm">
+        <h1 class="text-2xl font-bold text-center mb-6">Login to Linetodo</h1>
+
+        <form id="loginForm" class="space-y-4">
+          <input
+            type="text"
+            id="username"
+            placeholder="Username"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <input
+            type="password"
+            id="password"
+            placeholder="password"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button
+            class="w-full bg-primary text-white py-2 rounded-lg hover:bg-indigo-700 trasition"
+          >
+            Login
+          </button>
+        </form>
+
+        <div
+          id="loginMessage"
+          class="mt-4 text-sm text-center text-gray-600"
+        ></div>
+      </div>
+    </div>
+  </body>
+</html>
