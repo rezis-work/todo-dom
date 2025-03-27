@@ -5,10 +5,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const role = localStorage.getItem("role");
   const userInfo = document.getElementById("userInfo");
   const logoutBtn = document.getElementById("logoutBtn");
+  const isLoading = "Loading...";
 
   if (!token) {
     window.location.href = "index.html";
   }
+
+  userInfo.innerHTML = isLoading;
 
   try {
     const profile = await getUserProfile(token);
