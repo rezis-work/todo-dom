@@ -1,4 +1,9 @@
-import { createTask, getUsertasks } from "../api/tasksApi.js";
+import {
+  createTask,
+  getUsertasks,
+  updateTask,
+  deleteTask,
+} from "../api/tasksApi.js";
 import { renderTasksToDom } from "../utils/rendertasks.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -13,7 +18,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function fetchAndRenderTasks() {
     try {
       const tasks = await getUsertasks(token);
-      renderTasksToDom(taskList, tasks);
+      renderTasksToDom(
+        taskList,
+        tasks,
+        async (taskId) => {
+          const task = tasks.find((t) => t._id === taskId);
+          if (!task) return;
+          await updateTask(token, taskId, { completed: !task.completed });
+          await fetchAndRenderTasks();
+        },
+        async (taskid) => {
+          await deleteTask(token, taskid);
+          await fetchAndRenderTasks();
+        }
+      );
     } catch (err) {
       taskList.innerHTML = `<p class='text-red-500 text-center'>${err.message}</p>`;
     }
