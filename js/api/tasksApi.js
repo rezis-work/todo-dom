@@ -1,7 +1,21 @@
 const API_URL = "http://localhost:5000";
 
-export async function getUsertasks(token) {
-  const res = await fetch(`${API_URL}/tasks`, {
+export async function getUsertasks(token, filters = {}) {
+  const params = new URLSearchParams();
+
+  if (filters.completed && filters.completed !== "all") {
+    params.append("completed", filters.completed);
+  }
+
+  if (filters.sort) {
+    params.append("sort", filters.sort);
+  }
+
+  if (filters.search) {
+    params.append("search", filters.search);
+  }
+
+  const res = await fetch(`${API_URL}/tasks?${params.toString()}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

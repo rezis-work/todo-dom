@@ -28,6 +28,32 @@
         <h1 class="text-2xl font-bold mb-4 text-center">Welcome</h1>
         <div id="userInfo" class="space-y-2 text-gray-700"></div>
         <h2 class="text-xl font-semibold mt-8 mb-2 text-center">
+          Filter & Search
+        </h2>
+        <select
+          id="completedFilter"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        >
+          <option value="all">All</option>
+          <option value="true">Completed</option>
+          <option value="false">Incomplete</option>
+        </select>
+        <select
+          id="sortOrder"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        >
+          <option value="desc">Newest Firts</option>
+          <option value="asc">Oldest First</option>
+        </select>
+        <div class="mb-6 space-y-3">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search task by name"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+        <h2 class="text-xl font-semibold mt-8 mb-2 text-center">
           Add New Task
         </h2>
         <form id="taskForm" class="space-y-4 mb-6">
@@ -64,7 +90,10 @@
           </button>
         </form>
         <h2 class="text-xl font-semibold mt-8 mb-4 text-center">Your Tasks</h2>
-        <div id="taskList" class="space-y-4"></div>
+        <div
+          id="taskList"
+          class="space-y-4 max-h-[300px] overflow-y-auto"
+        ></div>
         <button
           id="logoutBtn"
           class="mt-6 w-full bg-red-500 text-white py-2 hover:bg-red-700"

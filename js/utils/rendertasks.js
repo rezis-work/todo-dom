@@ -5,6 +5,8 @@ export function renderTasksToDom(
   onDelete,
   onEdit
 ) {
+  console.log("Rendered task list with:", tasks.length, "tasks");
+  taskListEl.innerHTML = "";
   if (tasks.length === 0) {
     taskListEl.innerHTML =
       "<p class='text-gray-500 text-center'>No tasks found</p>";

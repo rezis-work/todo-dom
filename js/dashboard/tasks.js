@@ -19,35 +19,59 @@ document.addEventListener("DOMContentLoaded", async () => {
   const editPriority = document.getElementById("editPriority");
   const cancelEdit = document.getElementById("cancelEdit");
 
-  let currentTasks = [];
+  const completedFilter = document.getElementById("completedFilter");
+  const sortOrder = document.getElementById("sortOrder");
+  const searchInput = document.getElementById("searchInput");
+
   let editingTaskId = null;
+
+  async function handleComplete(tasks, taskId) {
+    const task = tasks.find((t) => t._id === taskId);
+    if (!task) return;
+    await updateTask(token, taskId, { completed: !task.completed });
+    await fetchAndRenderTasks();
+  }
+
+  async function handleDelete(tasks, taskId) {
+    const task = tasks.find((t) => t._id === taskId);
+    if (!task) return;
+    await deleteTask(token, taskId);
+    await fetchAndRenderTasks();
+  }
+
+  async function handleEdit(tasks, taskId) {
+    const task = tasks.find((t) => t._id === taskId);
+    if (!task) return;
+    editingTaskId = taskId;
+    editTaskName.value = task.task;
+    editPriority.value = task.priority;
+    editModal.classList.remove("hidden");
+  }
 
   if (!token) return;
 
   async function fetchAndRenderTasks() {
     try {
-      const tasks = await getUsertasks(token);
+      const filters = {
+        completed: completedFilter.value,
+        sort: sortOrder.value,
+      };
+      const tasks = await getUsertasks(token, filters);
+
+      let filteredTasks = [...tasks];
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      if (searchTerm) {
+        filteredTasks = filteredTasks.filter((task) =>
+          task.task.toLowerCase().includes(searchTerm)
+        );
+      }
+
       renderTasksToDom(
         taskList,
-        tasks,
-        async (taskId) => {
-          const task = tasks.find((t) => t._id === taskId);
-          if (!task) return;
-          await updateTask(token, taskId, { completed: !task.completed });
-          await fetchAndRenderTasks();
-        },
-        async (taskid) => {
-          await deleteTask(token, taskid);
-          await fetchAndRenderTasks();
-        },
-        async (taskId) => {
-          const task = tasks.find((t) => t._id === taskId);
-          if (!task) return;
-          editingTaskId = taskId;
-          editTaskName.value = task.task;
-          editPriority.value = task.priority;
-          editModal.classList.remove("hidden");
-        }
+        filteredTasks,
+        async (taskId) => handleComplete(tasks, taskId),
+        async (taskId) => handleDelete(tasks, taskId),
+        async (taskId) => handleEdit(tasks, taskId)
       );
     } catch (err) {
       taskList.innerHTML = `<p class='text-red-500 text-center'>${err.message}</p>`;
@@ -64,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       await createTask(token, { task: tasktext, priority });
       taskInput.value = "";
-      prioritySelect.value = "0";
+      prioritySelect.value = "1";
       await fetchAndRenderTasks();
     } catch (err) {
       alert(err.message);
@@ -95,6 +119,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   cancelEdit.addEventListener("click", () => {
     editingTaskId = null;
     editModal.classList.add("hidden");
+  });
+
+  searchInput.addEventListener("input", () => {
+    fetchAndRenderTasks();
+  });
+
+  completedFilter.addEventListener("change", () => {
+    fetchAndRenderTasks();
+  });
+
+  sortOrder.addEventListener("change", () => {
+    fetchAndRenderTasks();
   });
 
   fetchAndRenderTasks();
