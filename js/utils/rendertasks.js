@@ -16,7 +16,7 @@ export function renderTasksToDom(
   taskListEl.innerHTML = tasks
     .map((task) => {
       return `
-      <div class="p-4 bg-white border rounded shadow-sm">
+      <div class="p-4 bg-white flex flex-col gap-3 justify-between items-center border rounded shadow-sm">
          <h3 class="font-semibold text-lg">${task.task}</h3>
          <p class="font-semibold text-lg">Priority:${task.priority}</p>
          <p class="text-sm">Completed: ${task.completed ? "✅" : "🚫"}</p>
