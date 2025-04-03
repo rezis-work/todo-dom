@@ -13,6 +13,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const taskInput = document.getElementById("taskInput");
   const prioritySelect = document.getElementById("priorityInput");
 
+  const editModal = document.getElementById("editModal");
+  const editForm = document.getElementById("editForm");
+  const editTaskName = document.getElementById("editTaskName");
+  const editPriority = document.getElementById("editPriority");
+  const cancelEdit = document.getElementById("cancelEdit");
+
+  let currentTasks = [];
+  let editingTaskId = null;
+
   if (!token) return;
 
   async function fetchAndRenderTasks() {
@@ -30,6 +39,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         async (taskid) => {
           await deleteTask(token, taskid);
           await fetchAndRenderTasks();
+        },
+        async (taskId) => {
+          const task = tasks.find((t) => t._id === taskId);
+          if (!task) return;
+          editingTaskId = taskId;
+          editTaskName.value = task.task;
+          editPriority.value = task.priority;
+          editModal.classList.remove("hidden");
         }
       );
     } catch (err) {
@@ -52,6 +69,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
       alert(err.message);
     }
+  });
+
+  editForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    console.log("editForm submitted");
+    if (!editingTaskId) return;
+
+    try {
+      const updateName = editTaskName.value.trim();
+      const updatePriority = parseInt(editPriority.value);
+      await updateTask(token, editingTaskId, {
+        task: updateName,
+        priority: updatePriority,
+      });
+
+      editingTaskId = null;
+      editModal.classList.add("hidden");
+      await fetchAndRenderTasks();
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  cancelEdit.addEventListener("click", () => {
+    editingTaskId = null;
+    editModal.classList.add("hidden");
   });
 
   fetchAndRenderTasks();
